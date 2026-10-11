@@ -1,44 +1,56 @@
-# Mantine Vite template
+# Geriatric Care Assessment Form
 
-## Features
+One-page assessment form for a visiting nurse. Built with React 19, TypeScript, Mantine, and Zod.
 
-This template comes with the following features:
+## How to run
 
-- [PostCSS](https://postcss.org/) with [mantine-postcss-preset](https://mantine.dev/styles/postcss-preset)
-- [TypeScript](https://www.typescriptlang.org/)
-- [Storybook](https://storybook.js.org/)
-- [Vitest](https://vitest.dev/) setup with [React Testing Library](https://testing-library.com/docs/react-testing-library/intro)
-- [Vite+](https://viteplus.dev/) unified toolchain: Vite, Vitest, Oxlint and Oxfmt are run with `vp` and configured in `vite.config.mjs`
+```bash
+yarn install
+yarn dev
+```
 
-## Vite+ CLI
+Open the URL Vite prints (usually `http://localhost:5173`).
 
-The template works without any global installation: `vp` is installed as a dev dependency and all npm scripts use it.
+### Useful scripts
 
-Optionally, you can install the [global `vp` CLI](https://viteplus.dev/guide/global-cli).
-It automatically switches to the Node.js version pinned in `.node-version` and lets you run commands directly, for example `vp dev` or `vp check --fix` instead of `yarn vp check --fix`.
+| Command | What it does |
+| --- | --- |
+| `yarn dev` | Start the local app |
+| `yarn test` | Format/lint/typecheck, unit tests, and production build |
+| `yarn vitest` | Run Vitest only |
+| `yarn build` | Typecheck and build for production |
+| `yarn preview` | Preview the production build locally |
 
-## npm scripts
+## What was built
 
-## Build and dev scripts
+- 10-field Geriatric Care Assessment form in `src/features/assessment/`
+- Zod schema with the assignment rules and messages (`schema.ts`)
+- Validation via Mantine `schemaResolver` on blur and submit
+- Fake save (~800 ms) with loading state and a success alert showing the parsed payload
+- “Load sample patient” fixture with invented data only
+- Schema boundary tests (age at 60 vs one day short) and a form submit test
 
-- `dev` – start development server
-- `build` – build production version of the app
-- `build:analyze` – build the app and open bundle size visualization (`dist/stats.html`)
-- `preview` – locally preview production build
+## Deployed URL
 
-### Testing scripts
+_Not deployed yet._ After deploy, put the public URL here, for example:
 
-- `check` – checks formatting, lint rules and TypeScript types with `vp check`
-- `check:fix` – same as `check`, fixes formatting and auto-fixable lint errors
-- `typecheck` – checks TypeScript types
-- `lint` – runs oxlint and stylelint
-- `format:test` – checks files with oxfmt
-- `vitest` – runs vitest tests
-- `vitest:watch` – starts vitest watch
-- `test` – runs `check`, `stylelint`, `vitest` and `build` scripts
+```text
+https://your-app.vercel.app
+```
 
-### Other scripts
+## Unfinished / notes
 
-- `storybook` – starts storybook dev server
-- `storybook:build` – build production storybook bundle to `storybook-static`
-- `format:write` – formats all files with oxfmt
+- **Deployment** — app builds locally (`yarn build` / `yarn preview`) but is not published yet. Next step: deploy to Vercel, Netlify, or similar and add the URL above.
+- **README time estimate** — update the time below with your real effort if it differs.
+- No backend, auth, routing beyond the template home page, or custom styling by design (out of scope for the assignment).
+
+## Time spent
+
+Roughly **2–2.5 hours** on the form, schema wiring, tests, and cleanup against the assignment.
+
+## Stack
+
+- React 19 + TypeScript
+- Mantine (`@mantine/core`, `@mantine/form`, `@mantine/dates`)
+- Zod 4
+- Vite / Vitest (Mantine Vite template)
