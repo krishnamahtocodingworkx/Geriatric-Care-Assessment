@@ -1,13 +1,18 @@
 import { useState } from 'react';
 import {
   Alert,
+  Badge,
+  Box,
   Button,
   Checkbox,
   Code,
   Container,
+  Divider,
+  Group,
   NumberInput,
   Paper,
   Select,
+  SimpleGrid,
   Stack,
   Text,
   TextInput,
@@ -19,10 +24,15 @@ import { samplePatient } from './fixtures';
 import { assessmentSchema, type Assessment } from './schema';
 import type { AssessmentDraft } from './type';
 import { mobilityOptions } from './utils';
+import classes from './AssessmentForm.module.css';
 
 type AssessmentFormProps = {
   onSave?: (data: Assessment) => void;
 };
+
+function SectionLabel({ children }: { children: string }) {
+  return <Text className={classes.sectionLabel}>{children}</Text>;
+}
 
 export function AssessmentForm({ onSave }: AssessmentFormProps) {
   const [saving, setSaving] = useState(false);
@@ -68,127 +78,160 @@ export function AssessmentForm({ onSave }: AssessmentFormProps) {
   };
 
   return (
-    <Container size="md" py="xl">
-      <Paper withBorder shadow="sm" radius="md" p="xl">
-        <Stack gap="lg">
-          <div>
-            <Title order={2}>Geriatric Care Assessment</Title>
-            <Text c="dimmed" size="sm" mt={4}>
-              Complete the patient assessment and review all required fields.
-            </Text>
-          </div>
+    <Box className={classes.page} py={{ base: 'md', sm: 'xl' }}>
+      <Container size="lg">
+        <Paper className={classes.card} p={{ base: 'md', sm: 'xl' }}>
+          <Stack gap="xl">
+            <div className={classes.header}>
+              <Group align="flex-start" gap="md" wrap="nowrap">
+                <span className={classes.brandMark} aria-hidden="true">
+                  GC
+                </span>
+                <div>
+                  <Group gap="sm" mb={4}>
+                    <Title order={2}>Geriatric Care Assessment</Title>
+                    <Badge variant="light" color="teal" visibleFrom="sm">
+                      Home visit
+                    </Badge>
+                  </Group>
+                  <Text c="dimmed" size="sm" maw={420}>
+                    Complete the patient assessment and review all required fields before saving.
+                  </Text>
+                </div>
+              </Group>
+            </div>
 
-          <form onSubmit={form.onSubmit(handleSubmit)}>
-            <Stack gap="md">
-              <TextInput
-                label="Medical record number"
-                placeholder="MRN-004821"
-                {...form.getInputProps('mrn')}
-              />
+            <form onSubmit={form.onSubmit(handleSubmit)}>
+              <Stack gap="xl">
+                <Stack gap="md">
+                  <SectionLabel>Patient details</SectionLabel>
+                  <SimpleGrid cols={{ base: 1, sm: 2 }} spacing="md">
+                    <TextInput
+                      label="Medical record number"
+                      placeholder="MRN-004821"
+                      {...form.getInputProps('mrn')}
+                    />
+                    <TextInput label="Patient name" {...form.getInputProps('patientName')} />
+                    <DateInput
+                      label="Date of birth"
+                      value={form.values.dateOfBirth || null}
+                      onChange={(value) => form.setFieldValue('dateOfBirth', value ?? '')}
+                      onBlur={() => form.validateField('dateOfBirth')}
+                      error={form.errors.dateOfBirth}
+                    />
+                    <DateInput
+                      label="Assessment date"
+                      maxDate={new Date()}
+                      value={form.values.assessmentDate || null}
+                      onChange={(value) => form.setFieldValue('assessmentDate', value ?? '')}
+                      onBlur={() => form.validateField('assessmentDate')}
+                      error={form.errors.assessmentDate}
+                    />
+                  </SimpleGrid>
+                </Stack>
 
-              <TextInput label="Patient name" {...form.getInputProps('patientName')} />
+                <Divider />
 
-              <DateInput
-                label="Date of birth"
-                value={form.values.dateOfBirth || null}
-                onChange={(value) => form.setFieldValue('dateOfBirth', value ?? '')}
-                onBlur={() => form.validateField('dateOfBirth')}
-                error={form.errors.dateOfBirth}
-              />
+                <Stack gap="md">
+                  <SectionLabel>Clinical assessment</SectionLabel>
+                  <SimpleGrid cols={{ base: 1, sm: 2 }} spacing="md">
+                    <Select
+                      label="Mobility"
+                      placeholder="Select mobility status"
+                      data={mobilityOptions}
+                      clearable
+                      {...form.getInputProps('mobility')}
+                      onChange={(value) => form.setFieldValue('mobility', value ?? '')}
+                    />
+                    <NumberInput
+                      label="Barthel Index"
+                      min={0}
+                      max={100}
+                      step={5}
+                      allowDecimal={false}
+                      clampBehavior="none"
+                      value={Number.isNaN(form.values.barthelIndex) ? '' : form.values.barthelIndex}
+                      onChange={(value) =>
+                        form.setFieldValue(
+                          'barthelIndex',
+                          value === '' ? Number.NaN : Number(value)
+                        )
+                      }
+                      onBlur={() => form.validateField('barthelIndex')}
+                      error={form.errors.barthelIndex}
+                    />
+                    <NumberInput
+                      label="Regular medications"
+                      min={0}
+                      max={30}
+                      allowDecimal={false}
+                      clampBehavior="none"
+                      value={
+                        Number.isNaN(form.values.medicationCount) ? '' : form.values.medicationCount
+                      }
+                      onChange={(value) =>
+                        form.setFieldValue(
+                          'medicationCount',
+                          value === '' ? Number.NaN : Number(value)
+                        )
+                      }
+                      onBlur={() => form.validateField('medicationCount')}
+                      error={form.errors.medicationCount}
+                    />
+                    <DateInput
+                      label="Next review date"
+                      value={form.values.followUpDate || null}
+                      onChange={(value) => form.setFieldValue('followUpDate', value ?? '')}
+                      onBlur={() => form.validateField('followUpDate')}
+                      error={form.errors.followUpDate}
+                    />
+                  </SimpleGrid>
 
-              <DateInput
-                label="Assessment date"
-                maxDate={new Date()}
-                value={form.values.assessmentDate || null}
-                onChange={(value) => form.setFieldValue('assessmentDate', value ?? '')}
-                onBlur={() => form.validateField('assessmentDate')}
-                error={form.errors.assessmentDate}
-              />
+                  <Checkbox
+                    mt="xs"
+                    label="Pharmacist review requested"
+                    {...form.getInputProps('pharmacistReviewRequested', {
+                      type: 'checkbox',
+                    })}
+                  />
+                </Stack>
 
-              <Select
-                label="Mobility"
-                placeholder="Select mobility status"
-                data={mobilityOptions}
-                clearable
-                {...form.getInputProps('mobility')}
-                onChange={(value) => form.setFieldValue('mobility', value ?? '')}
-              />
+                <Divider />
 
-              <NumberInput
-                label="Barthel Index"
-                min={0}
-                max={100}
-                step={5}
-                allowDecimal={false}
-                clampBehavior="none"
-                value={Number.isNaN(form.values.barthelIndex) ? '' : form.values.barthelIndex}
-                onChange={(value) =>
-                  form.setFieldValue('barthelIndex', value === '' ? Number.NaN : Number(value))
-                }
-                onBlur={() => form.validateField('barthelIndex')}
-                error={form.errors.barthelIndex}
-              />
+                <Stack gap="md">
+                  <SectionLabel>Consent</SectionLabel>
+                  <Checkbox
+                    label="Patient or representative has given consent"
+                    {...form.getInputProps('consentObtained', {
+                      type: 'checkbox',
+                    })}
+                  />
+                </Stack>
 
-              <NumberInput
-                label="Regular medications"
-                min={0}
-                max={30}
-                allowDecimal={false}
-                clampBehavior="none"
-                value={Number.isNaN(form.values.medicationCount) ? '' : form.values.medicationCount}
-                onChange={(value) =>
-                  form.setFieldValue('medicationCount', value === '' ? Number.NaN : Number(value))
-                }
-                onBlur={() => form.validateField('medicationCount')}
-                error={form.errors.medicationCount}
-              />
+                <div className={classes.actions}>
+                  <Button type="submit" loading={saving} disabled={saving}>
+                    Save assessment
+                  </Button>
+                  <Button
+                    type="button"
+                    variant="default"
+                    disabled={saving}
+                    onClick={loadSamplePatient}
+                  >
+                    Load sample patient
+                  </Button>
+                </div>
+              </Stack>
+            </form>
 
-              <Checkbox
-                label="Pharmacist review requested"
-                {...form.getInputProps('pharmacistReviewRequested', {
-                  type: 'checkbox',
-                })}
-              />
-
-              <DateInput
-                label="Next review date"
-                value={form.values.followUpDate || null}
-                onChange={(value) => form.setFieldValue('followUpDate', value ?? '')}
-                onBlur={() => form.validateField('followUpDate')}
-                error={form.errors.followUpDate}
-              />
-
-              <Checkbox
-                label="Patient or representative has given consent"
-                {...form.getInputProps('consentObtained', {
-                  type: 'checkbox',
-                })}
-              />
-
-              <Button type="submit" loading={saving} disabled={saving} fullWidth>
-                Save assessment
-              </Button>
-
-              <Button
-                type="button"
-                variant="light"
-                color="gray"
-                disabled={saving}
-                onClick={loadSamplePatient}
-                fullWidth
-              >
-                Load sample patient
-              </Button>
-            </Stack>
-          </form>
-
-          {savedData && (
-            <Alert color="green" title="Assessment saved successfully">
-              <Code block>{JSON.stringify(savedData, null, 2)}</Code>
-            </Alert>
-          )}
-        </Stack>
-      </Paper>
-    </Container>
+            {savedData && (
+              <Alert color="teal" title="Assessment saved successfully" variant="light">
+                <Code block>{JSON.stringify(savedData, null, 2)}</Code>
+              </Alert>
+            )}
+          </Stack>
+        </Paper>
+      </Container>
+    </Box>
   );
 }
