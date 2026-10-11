@@ -2,6 +2,9 @@
 
 One-page assessment form for a visiting nurse. Built with React 19, TypeScript, Mantine, and Zod.
 
+- **Live app:** [https://geriatric-care-assessment.vercel.app/](https://geriatric-care-assessment.vercel.app/)
+- **Repository:** [https://github.com/krishnamahtocodingworkx/Geriatric-Care-Assessment](https://github.com/krishnamahtocodingworkx/Geriatric-Care-Assessment)
+
 ## How to run
 
 ```bash
@@ -32,21 +35,15 @@ Open the URL Vite prints (usually `http://localhost:5173`).
 
 ## Deployed URL
 
-_Not deployed yet._ After deploy, put the public URL here, for example:
+[https://geriatric-care-assessment.vercel.app/](https://geriatric-care-assessment.vercel.app/)
 
-```text
-https://your-app.vercel.app
-```
+## Notes
 
-## Unfinished / notes
-
-- **Deployment** — app builds locally (`yarn build` / `yarn preview`) but is not published yet. Next step: deploy to Vercel, Netlify, or similar and add the URL above.
-- **README time estimate** — update the time below with your real effort if it differs.
-- No backend, auth, routing beyond the template home page, or custom styling by design (out of scope for the assignment).
+No backend, authentication, extra routing, or custom styling — those were out of scope for the assignment.
 
 ## Time spent
 
-Roughly **2–2.5 hours** on the form, schema wiring, tests, and cleanup against the assignment.
+Roughly **2–2.5 hours** on the form, schema wiring, tests, deploy setup, and cleanup against the assignment.
 
 ## Stack
 
@@ -54,3 +51,4 @@ Roughly **2–2.5 hours** on the form, schema wiring, tests, and cleanup against
 - Mantine (`@mantine/core`, `@mantine/form`, `@mantine/dates`)
 - Zod 4
 - Vite / Vitest (Mantine Vite template)
+- Deployed on Vercel
